@@ -1,0 +1,46 @@
+version: '3.3'
+services: 
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: dockerfile
+    image: kosvoski/nn-nginx
+    container_name: nginx
+    networks:
+      - rede
+    ports:
+      - 8080:80    
+    tty: true
+  node:
+    build: 
+      context: ./node
+      dockerfile: dockerfile
+    image: kosvoski/nn-node
+    container_name: node
+    networks:
+      - rede
+    ports:
+      - 3000:3000
+    volumes:
+      - ./node:/usr/src/app
+    tty: true    
+  db:
+    image: mysql
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'base'      
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root'
+    networks:
+      - rede
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql:/var/lib/mysql
+networks:
+  rede:
+    driver: bridge
+
+
