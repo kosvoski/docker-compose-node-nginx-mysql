@@ -11,19 +11,24 @@ services:
     ports:
       - 8080:80    
     tty: true
-  node:  
-    image: node:alpine
+  node:
+    build: 
+      context: ./node
+      dockerfile: dockerfile
+    image: kosvoski/nn-node
     container_name: node
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 30s node app.js
+    restart: always
     networks:
       - rede
-    command: sh -c "cd /usr/src/app && npm install && node app.js"
-    expose:
-      - 3000
     ports:
       - 3000:3000
     volumes:
       - ./node:/usr/src/app
-    restart: on-failure  
+      - /usr/src/app/node_modules
+    tty: true 
+    depends_on:
+      - db
   db:
     image: mysql
     container_name: mysql
