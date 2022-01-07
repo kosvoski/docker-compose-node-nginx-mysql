@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 services: 
   nginx:
     build: 
@@ -11,19 +11,19 @@ services:
     ports:
       - 8080:80    
     tty: true
-  node:
-    build: 
-      context: ./node
-      dockerfile: dockerfile
-    image: kosvoski/nn-node
+  node:  
+    image: node:alpine
     container_name: node
     networks:
       - rede
+    command: sh -c "cd /usr/src/app && npm install && node app.js"
+    expose:
+      - 3000
     ports:
       - 3000:3000
     volumes:
       - ./node:/usr/src/app
-    tty: true    
+    restart: on-failure  
   db:
     image: mysql
     container_name: mysql
