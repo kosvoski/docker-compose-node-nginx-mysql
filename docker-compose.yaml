@@ -11,6 +11,8 @@ services:
     ports:
       - 8080:80    
     tty: true
+    depends_on:
+      - node
   node:
     build: 
       context: ./node
